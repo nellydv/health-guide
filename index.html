@@ -2,53 +2,69 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Vaccine RK</title>
+    <title>Vaccine Guide</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; text-align: center; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 20px auto; }
-        button { padding: 10px 20px; cursor: pointer; background: #3498db; color: white; border: none; border-radius: 5px; margin: 5px; }
-        .myth-card { border: 1px solid #e74c3c; padding: 10px; margin: 10px; border-radius: 8px; cursor: pointer; }
+        /* CSS код — теперь он точно применится */
+        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; text-align: center; }
+        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 20px auto; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; font-weight: bold; }
+        .active { background: #28a745; }
+        .item { background: #e9ecef; padding: 10px; margin: 5px 0; border-radius: 5px; text-align: left; border-left: 4px solid #007bff; }
     </style>
 </head>
 <body>
-    <div class="lang-buttons">
-        <button onclick="changeLang('kz')">ҚАЗ</button>
-        <button onclick="changeLang('ru')">РУС</button>
-    </div>
+
+    <button onclick="changeL('kz')" id="b-kz">ҚАЗ</button>
+    <button onclick="changeL('ru')" id="b-ru" class="active">РУС</button>
+
+    <h1 id="t">Защитите будущее ребенка</h1>
     
-    <h1 id="hero-title">Защитите будущее ребенка</h1>
-    
-    <div class="card">
-        <h2 id="calc-h">Калькулятор</h2>
-        <input type="date" id="birthdate">
-        <button onclick="generateSchedule()" id="calc-btn">Рассчитать</button>
-        <div id="schedule-output"></div>
+    <div class="box">
+        <h2 id="ch">Калькулятор</h2>
+        <input type="date" id="d" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+        <button onclick="calc()" id="cb">Рассчитать</button>
+        <div id="res"></div>
     </div>
 
-    <h2>Мифы</h2>
-    <div id="myth-container"></div>
+    <div class="box">
+        <h2 id="mh">Мифы</h2>
+        <div id="m-res"></div>
+    </div>
 
     <script>
-        const data = {
-            ru: { title: "Защитите будущее ребенка", calc: "Калькулятор", myth: "Мифы", vaccines: ["БЦЖ (0-4 дня)", "АбКДС (2 мес)"] },
-            kz: { title: "Балаңызды қорғаңыз", calc: "Калькулятор", myth: "Мифтер", vaccines: ["БЦЖ (0-4 күн)", "АбКДС (2 ай)"] }
+        /* JavaScript код — логика смены языка и расчетов */
+        const content = {
+            ru: { t: "Защитите будущее ребенка", ch: "Калькулятор", cb: "Рассчитать", mh: "Мифы", v: ["БЦЖ (0-4 дня)", "АбКДС (2 мес)"], m: "Миф: Вакцины опасны. Шындық: Нет, они спасают жизни." },
+            kz: { t: "Балаңызды қорғаңыз", ch: "Екпе калькуляторы", cb: "Есептеу", mh: "Мифтер", v: ["БЦЖ (0-4 күн)", "АбКДС (2 ай)"], m: "Миф: Вакцина қауіпті. Шындық: Жоқ, ол өмірді сақтайды." }
         };
-        let cur = 'ru';
-        function changeLang(l) {
-            cur = l;
-            document.getElementById('hero-title').innerText = data[l].title;
-            document.getElementById('calc-h').innerText = data[l].calc;
-            render();
+
+        let lang = 'ru';
+
+        function changeL(l) {
+            lang = l;
+            document.getElementById('t').innerText = content[l].t;
+            document.getElementById('ch').innerText = content[l].ch;
+            document.getElementById('cb').innerText = content[l].cb;
+            document.getElementById('mh').innerText = content[l].mh;
+            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            document.getElementById('b-' + l).classList.add('active');
+            document.getElementById('res').innerHTML = "";
+            renderM();
         }
-        function render() {
-            const c = document.getElementById('myth-container');
-            c.innerHTML = cur === 'ru' ? "Кликните на кнопку выше для смены языка" : "Тілді ауыстыру үшін батырманы басыңыз";
+
+        function renderM() {
+            document.getElementById('m-res').innerHTML = <p>${content[lang].m}</p>;
         }
-        function generateSchedule() {
-            const out = document.getElementById('schedule-output');
-            out.innerHTML = "<h3>" + data[cur].vaccines.join(", ") + "</h3>";
+
+        function calc() {
+            let html = "<strong>График:</strong>";
+            content[lang].v.forEach(vac => {
+                html += <div class="item">${vac}</div>;
+            });
+            document.getElementById('res').innerHTML = html;
         }
-        window.onload = render;
+
+        window.onload = renderM;
     </script>
 </body>
 </html>
