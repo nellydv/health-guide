@@ -1,0 +1,71 @@
+title: "Защитите будущее своего ребенка", sub: "Гид по вакцинации в Республике Казахстан",
+                calc: "Калькулятор прививок", btn: "Рассчитать", myth: "Мифы и Реальность",
+                mCalc: "Калькулятор", mMyths: "Мифы",
+                vaccines: [
+                    {n: "БЦЖ и ВГВ (0-4 дня)", d: "Защита от туберкулеза и гепатита В в роддоме."},
+                    {n: "АбКДС (2 месяца)", d: "Защита от дифтерии, коклюша и столбняка."}
+                ],
+                myths: [
+                    {f: "Миф: Вакцины вызывают аутизм", b: "Реальность: Научно доказано, что это ложь."},
+                    {f: "Лучше переболеть самому", b: "Болезни дают тяжелые осложнения, вакцина — нет."}
+                ]
+            },
+            kz: {
+                title: "Балаңыздың болашағын қорғаңыз", sub: "Қазақстан Республикасындағы вакцинация нұсқаулығы",
+                calc: "Екпе калькуляторы", btn: "Есептеу", myth: "Миф пен Шындық",
+                mCalc: "Калькулятор", mMyths: "Мифтер",
+                vaccines: [
+                    {n: "БЦЖ және ВГВ (0-4 күн)", d: "Перзентханада жасалады. Туберкулез бен гепатиттен қорғайды."},
+                    {n: "АбКДС (2 ай)", d: "Дифтерия, көкжөтел және сіреспеге қарсы екпе."}
+                ],
+                myths: [
+                    {f: "Миф: Вакцина аутизм тудырады", b: "Шындық: Бұл жалған, ғылым оны теріске шығарды."}
+                ]
+            }
+        };
+
+        let currentLang = 'ru';
+
+        function changeLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-buttons button').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + lang).classList.add('active');
+            
+            document.getElementById('hero-title').innerText = data[lang].title;
+            document.getElementById('hero-sub').innerText = data[lang].sub;
+            document.getElementById('calc-h').innerText = data[lang].calc;
+            document.getElementById('calc-btn').innerText = data[lang].btn;
+            document.getElementById('myth-h').innerText = data[lang].myth;
+            document.getElementById('m-calc').innerText = data[lang].mCalc;
+            document.getElementById('m-myths').innerText = data[lang].mMyths;
+            
+            renderMyths();
+            document.getElementById('schedule-output').innerHTML = "";
+        }
+
+        function renderMyths() {
+            const container = document.getElementById('myth-container');
+            container.innerHTML = "";
+            data[currentLang].myths.forEach(m => {
+                container.innerHTML += `
+                    <div class="myth-card" onclick="this.classList.toggle('flipped')">
+                        <div class="card-inner">
+                            <div class="front">${m.f}</div>
+                            <div class="back">${m.b}</div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function generateSchedule() {
+            const out = document.getElementById('schedule-output');
+            out.innerHTML = "<h3>График:</h3>";
+            data[currentLang].vaccines.forEach(v => {
+                out.innerHTML += <div class="vaccine-item"><strong>${v.n}</strong><br>${v.d}</div>;
+            });
+        }
+
+        window.onload = () => renderMyths();
+    </script>
+</body>
+</html>
