@@ -2,69 +2,92 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Vaccine Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaccination Guide RK</title>
     <style>
-        /* CSS код — теперь он точно применится */
-        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; text-align: center; }
-        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 20px auto; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; font-weight: bold; }
-        .active { background: #28a745; }
-        .item { background: #e9ecef; padding: 10px; margin: 5px 0; border-radius: 5px; text-align: left; border-left: 4px solid #007bff; }
+        /* Современный дизайн */
+        :root { --blue: #007aff; --bg: #f2f2f7; --card: #ffffff; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1c1c1e; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .lang-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        button { border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .btn-blue { background: var(--blue); color: white; width: 100%; margin-top: 15px; }
+        .btn-lang { background: #e5e5ea; color: #3a3a3c; }
+        .btn-lang.active { background: var(--blue); color: white; }
+        .card { background: var(--card); padding: 24px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        input { width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 10px; box-sizing: border-box; font-size: 16px; margin-top: 10px; }
+        .res-item { background: #f9f9fb; padding: 15px; border-radius: 12px; margin-top: 10px; text-align: left; border-left: 4px solid var(--blue); }
+        .myth-text { font-style: italic; color: #8e8e93; margin-top: 10px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-    <button onclick="changeL('kz')" id="b-kz">ҚАЗ</button>
-    <button onclick="changeL('ru')" id="b-ru" class="active">РУС</button>
+<div class="container">
+    <div class="lang-nav">
+        <button onclick="setL('kz')" id="l-kz" class="btn-lang">ҚАЗ</button>
+        <button onclick="setL('ru')" id="l-ru" class="btn-lang active">РУС</button>
+    </div>
 
-    <h1 id="t">Защитите будущее ребенка</h1>
+    <h1 id="t" style="text-align: center;">Защитите будущее ребенка</h1>
     
-    <div class="box">
-        <h2 id="ch">Калькулятор</h2>
-        <input type="date" id="d" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-        <button onclick="calc()" id="cb">Рассчитать</button>
+    <div class="card">
+        <h2 id="ch">Калькулятор прививок</h2>
+        <input type="date" id="d_val">
+        <button onclick="calc()" class="btn-blue" id="cb">Рассчитать график</button>
         <div id="res"></div>
     </div>
 
-    <div class="box">
-        <h2 id="mh">Мифы</h2>
-        <div id="m-res"></div>
+    <div class="card">
+        <h2 id="mh">Мифы и Реальность</h2>
+        <div id="m-res" class="myth-text"></div>
     </div>
+</div>
 
-    <script>
-        /* JavaScript код — логика смены языка и расчетов */
-        const content = {
-            ru: { t: "Защитите будущее ребенка", ch: "Калькулятор", cb: "Рассчитать", mh: "Мифы", v: ["БЦЖ (0-4 дня)", "АбКДС (2 мес)"], m: "Миф: Вакцины опасны. Шындық: Нет, они спасают жизни." },
-            kz: { t: "Балаңызды қорғаңыз", ch: "Екпе калькуляторы", cb: "Есептеу", mh: "Мифтер", v: ["БЦЖ (0-4 күн)", "АбКДС (2 ай)"], m: "Миф: Вакцина қауіпті. Шындық: Жоқ, ол өмірді сақтайды." }
-        };
-
-        let lang = 'ru';
-
-        function changeL(l) {
-            lang = l;
-            document.getElementById('t').innerText = content[l].t;
-            document.getElementById('ch').innerText = content[l].ch;
-            document.getElementById('cb').innerText = content[l].cb;
-            document.getElementById('mh').innerText = content[l].mh;
-            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-            document.getElementById('b-' + l).classList.add('active');
-            document.getElementById('res').innerHTML = "";
-            renderM();
+<script>
+    const content = {
+        ru: {
+            t: "Защитите будущее ребенка", ch: "Калькулятор прививок", cb: "Рассчитать график", mh: "Мифы и Реальность",
+            v: ["БЦЖ и ВГВ (0-4 дня)", "АбКДС, ИПВ, Хиб, ВГВ (2 месяца)", "Пневмококковая вакцина (2 месяца)"],
+            m: "Миф: Вакцины вызывают аутизм. Шындық: Это научно опровергнутая ложь. Исследования подтвердили безопасность."
+        },
+        kz: {
+            t: "Балаңыздың болашағын қорғаңыз", ch: "Екпе калькуляторы", cb: "Есептеу", mh: "Миф пен Шындық",
+            v: ["БЦЖ және ВГВ (0-4 күн)", "АбКДС кешені (2 ай)", "Пневмококк екпесі (2 ай)"],
+            m: "Миф: Вакцина аутизм тудырады. Шындық: Бұл жалған. Көптеген зерттеулер оның қауіпсіздігін дәлелдеді."
         }
+    };
 
-        function renderM() {
-            document.getElementById('m-res').innerHTML = <p>${content[lang].m}</p>;
-        }
+    let cur = 'ru';
 
-        function calc() {
-            let html = "<strong>График:</strong>";
-            content[lang].v.forEach(vac => {
-                html += <div class="item">${vac}</div>;
-            });
-            document.getElementById('res').innerHTML = html;
-        }
+    function setL(l) {
+        cur = l;
+        document.getElementById('t').innerText = content[l].t;
+        document.getElementById('ch').innerText = content[l].ch;
+        document.getElementById('cb').innerText = content[l].cb;
+        document.getElementById('mh').innerText = content[l].mh;
+        
+        document.querySelectorAll('.btn-lang').forEach(b => b.classList.remove('active'));
+        document.getElementById('l-' + l).classList.add('active');
+        
+        document.getElementById('res').innerHTML = "";
+        renderM();
+    }
 
-        window.onload = renderM;
-    </script>
+    function renderM() {
+        document.getElementById('m-res').innerText = content[cur].m;
+    }
+
+    function calc() {
+        let html = "<div style='margin-top:20px; font-weight:bold;'>Рекомендуемые прививки:</div>";
+        content[cur].v.forEach(vac => {
+            html += <div class="res-item">${vac}</div>;
+        });
+        document.getElementById('res').innerHTML = html;
+    }
+
+    window.onload = renderM;
+</script>
+
 </body>
 </html>
